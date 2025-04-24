@@ -1,0 +1,24 @@
+[project]
+name = "eyewire2-functional-analysis"
+version = "0.1.0"
+description = "eyewire2 functional data and analysis"
+requires-python = ">=3.12"
+dependencies = [
+    "jupyter>=1.1.1",
+    "matplotlib>=3.10.1",
+    "notebook>=7.4.1",
+    "numpy>=2.2.5",
+    "pandas>=2.2.3",
+    "seaborn>=0.13.2",
+    "tables>=3.10.2",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
