@@ -1,6 +1,10 @@
+## Principles of Collaboration
+
+**All data and code shared here is subject to the [Eyewire II Principles of Collaboration](https://eyewire.ai/principles).** By the use of this repository, you agree to be bound by these Principles.
+
 # Eyewire II: Functional data
 
-This repository hosts the functional data from OGB-1 recordings in the Eyewire II dataset. **All data and code shared here is subject to the [Eyewire II Principles of Collaboration](https://eyewire.ai/principles).** By the use of this repository, you agree to be bound by these Principles.
+This repository hosts the functional data from OGB-1 recordings in the Eyewire II dataset.
 
 This is work-in-progress and currently holds 
 - pre-processed Calcium traces from recorded over five recording fields: [h5 files](https://github.com/eulerlab/eyewire2-functional-analysis/tree/main/data/preprocessed-data)
