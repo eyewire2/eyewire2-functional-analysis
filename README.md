@@ -18,4 +18,10 @@ Feel free to open issues to ask questions and request features!
 
 ### Setup
 
-To use the code in this repository out of the box, you can use [uv](https://docs.astral.sh/uv/) to reproduce our python environment.
+To use the code in this repository out of the box, you can use [uv](https://docs.astral.sh/uv/) to reproduce our python environment. Follow these steps:
+
+- Install `uv`
+- Clone this repository and navigate to its root folder
+- Run `uv run jupyter lab` to start jupyter lab  - it should open in your browser, and allows you to run our notebooks.
+
+On the first call, `uv run` will install all dependencies into a `uv` virtual environment (placed in the `.venv` folder), which is then invoked on all further calls of `uv run`.
