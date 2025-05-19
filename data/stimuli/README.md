@@ -1,9 +1,6 @@
-# Disclaimer
+# Open TODOs:
 - TODO: Check if exact details match the stimuli that were actually used.
 - TODO: Add orientation of MB, corrected for setup.
-- TODO: Add open-retina examples.
-- TODO: Improve MC train/test order explanation.
-- TODO: Add MC test sequence order.
 
 # Stimulus description
 The stimuli, chirp, moving bar (MB) and mouse camera movies (MCs), used here are the same as in [Höfling et al. 2024](https://elifesciences.org/articles/86860).  
