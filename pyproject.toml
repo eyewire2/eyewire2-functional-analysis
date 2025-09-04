@@ -9,6 +9,7 @@ dependencies = [
     "notebook>=7.4.1",
     "numpy>=2.2.5",
     "pandas>=2.2.3",
+    "pandas-stubs==2.3.2.250827",
     "seaborn>=0.13.2",
     "tables>=3.10.2",
 ]
