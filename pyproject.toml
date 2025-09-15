@@ -5,6 +5,7 @@ description = "eyewire2 functional data and analysis"
 requires-python = ">=3.12"
 dependencies = [
     "cell-mosaics>=0.1.0",
+    "h5py>=3.14.0",
     "jupyter>=1.1.1",
     "matplotlib>=3.10.1",
     "notebook>=7.4.1",
