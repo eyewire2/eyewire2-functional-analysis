@@ -12,9 +12,9 @@ def plot_chirp(ax, row, stimulus_ms=None, plot_hline=True, plot_vlines=False):
     snippets = row['chirp_snippets']
     for i, trace in enumerate(snippets.T):
         ax.plot(np.arange(0, len(trace)) * row['chirp_snippets_dt'], trace / np.max(np.abs(trace)), color='dimgray',
-                alpha=0.5)
+                alpha=0.5, clip_on=False)
     ax.plot(np.arange(0, len(row['chirp_average_norm'])) * row['chirp_average_dt'], row['chirp_average_norm'],
-            color='darkred', alpha=0.8)
+            color='darkred', alpha=0.8, clip_on=False,)
     if plot_hline:
         ax.axhline(0, c='dimgray', ls='--')
     if plot_vlines:
@@ -34,8 +34,8 @@ def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False):
         snippets = row['bar_snippets'][:, np.array([0, 8, 16]) + i]
         time = (np.arange(0, snippets.shape[0]) + (snippets.shape[0] * 1.2 * i)) * row['bar_snippets_dt']
         for trace in snippets.T:
-            ax.plot(time, trace / vmax, color='dimgray', alpha=0.5)
-        ax.plot(time, np.mean(snippets, axis=1) / vmax, color='darkred', alpha=0.8)
+            ax.plot(time, trace / vmax, color='dimgray', alpha=0.5, clip_on=False,)
+        ax.plot(time, np.mean(snippets, axis=1) / vmax, color='darkred', alpha=0.8, clip_on=False)
         ax.axhline(0, c='dimgray', ls='--')
         if annotate_dirs or annotate_symbols:
             x = time[0] + 0.5 * (time[-1] - time[0])
