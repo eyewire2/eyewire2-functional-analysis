@@ -1,0 +1,6 @@
+experimenter,date,exp_num,raw_id,field,region,cond1,absx,absy,absz
+Franke,2018-10-11,2,1,GCL0,RR,control,1478.2,-557.4,1631.1
+Franke,2018-10-11,2,1,GCL1,RR,control,1522.4,-637.8,1628.7
+Franke,2018-10-11,2,1,GCL2,RR,control,1522.4,-413.8,1610.7
+Franke,2018-10-11,2,1,GCL3,RR,control,1281.6,-464.0,1622.5
+Franke,2018-10-11,2,1,GCL4,RR,control,1350.0,-777.0,1619.7
