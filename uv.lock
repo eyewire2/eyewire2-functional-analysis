@@ -2022,7 +2022,6 @@ wheels = [
 
 [[package]]
 name = "shapely"
-<<<<<<< HEAD
 version = "2.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
@@ -2075,9 +2074,7 @@ wheels = [
 [[package]]
 name = "shellingham"
 version = "1.5.4"
-=======
 version = "2.1.1"
->>>>>>> aa6862ec02430516a28626de7fdb1cd6315fb1db
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
