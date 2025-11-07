@@ -59,7 +59,7 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
+#*.log - to allow for QDSpy log files
 local_settings.py
 
 # Flask stuff:
