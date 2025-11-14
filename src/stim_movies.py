@@ -26,7 +26,7 @@ def calc_intensity_trace(
         _mov: np.array, _p: dict,
         _range_s: list =[0,-1], 
         _field_xy_um: list =[0,0], _field_size_um: list =[150,150],
-        _plot: bool = False
+        _plot: bool = False, _verbose=False
     ):
     """ Calculate intensity traces (mean and cumulative) for a field 
         (~ recording field plus surround) within a movie
@@ -44,14 +44,16 @@ def calc_intensity_trace(
     ix1 = ix +int(_field_size_um[0] /2 /pix_size_um)
     iy0 = iy -int(_field_size_um[1] /2 /pix_size_um)
     iy1 = iy +int(_field_size_um[1] /2 /pix_size_um)
-    print(f"Crop movie to pixels x={ix0}..{ix1}, y={iy0}..{iy1}")
+    if _verbose:
+        print(f"Crop movie to pixels x={ix0}..{ix1}, y={iy0}..{iy1}")
 
     # Crop movie to a field (~ recording field plus some surround)
     n_fr, _, _, _ = _mov.shape
     _range_s[1] = n_fr *dt_fr_s if _range_s[1] == -1 else _range_s[1]
     it0 = int(max(0, _range_s[0] /dt_fr_s))
     it1 = int(min(n_fr, _range_s[1] /dt_fr_s))
-    print(f"Use movie snippet from {_range_s[0]}..{_range_s[1]}s ({it0}..{it1})")
+    if _verbose:
+        print(f"Use movie snippet from {_range_s[0]}..{_range_s[1]}s ({it0}..{it1})")
     mov_range = _mov[it0:it1]
     mov_cropped = mov_range[:,ix0:ix1,iy0:iy1,:]
 
