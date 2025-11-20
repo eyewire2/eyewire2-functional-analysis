@@ -31,6 +31,8 @@ def calc_intensity_trace(
     """ Calculate intensity traces (mean and cumulative) for a field 
         (~ recording field plus surround) within a movie
     """
+    if _verbose:
+        print("_mov.shape", _mov.shape, "_range_s", _range_s)
     pix_size_um = _p["pix_size_um"]
     mov_dx_um = _p["mov_dxy_um"][0]
     mov_dy_um = _p["mov_dxy_um"][1]
