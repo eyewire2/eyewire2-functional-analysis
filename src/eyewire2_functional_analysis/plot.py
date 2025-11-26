@@ -292,7 +292,44 @@ def plot_retina_orientation(ax, tdist=50, x0=0, y0=0, size=1000, fontsize=14):
     ax.text(x0, y0 + size / 2 + tdist, 'D', c='k', va='bottom', ha='center', fontsize=fontsize)
 
 
-def plot_scale_bar(ax, x0=0, y0=0, size=1000, tdist=70, fontsize=14, text=True, unit="µm"):
-    ax.plot([-size / 2 + x0, +size / 2 + x0], [y0, y0], c='k', solid_capstyle='butt', clip_on=False)
-    if text:
-        ax.text(x0, y0 - tdist, f'{size:.0f} {unit}', c='k', va='top', ha='center', fontsize=fontsize)
+def plot_scale_bar(
+    ax, x0=0, y0=0, size=1000, tdist=70,
+    fontsize=14, text=True, unit="µm", orientation='h'
+):
+    """
+    Draws a horizontal or vertical scale bar.
+
+    orientation: 'h' for horizontal, 'v' for vertical
+    """
+
+    if orientation == 'h':
+        # horizontal bar
+        ax.plot(
+            [-size / 2 + x0, +size / 2 + x0],
+            [y0, y0],
+            c='k', solid_capstyle='butt', clip_on=False
+        )
+        if text:
+            ax.text(
+                x0, y0 - tdist,
+                f'{size:.0f} {unit}',
+                c='k', va='top', ha='center', fontsize=fontsize
+            )
+
+    elif orientation == 'v':
+        # vertical bar
+        ax.plot(
+            [x0, x0],
+            [-size / 2 + y0, +size / 2 + y0],
+            c='k', solid_capstyle='butt', clip_on=False
+        )
+        if text:
+            ax.text(
+                x0 + tdist, y0,
+                f'{size:.0f} {unit}',
+                c='k', va='center', ha='left', fontsize=fontsize
+            )
+
+    else:
+        raise ValueError("orientation must be 'h' or 'v'")
+
