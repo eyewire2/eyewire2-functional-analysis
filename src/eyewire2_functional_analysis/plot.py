@@ -1,6 +1,7 @@
 import cell_mosaics
 import numpy as np
 import skeliner as sk
+from matplotlib import patches as patches
 
 MB_DIRS = (0, 180, 45, 225, 90, 270, 135, 315)
 MB_DIRS_SYMBOLS = ('↑', '↓', '↖', '↘', '←', '→', '↙', '↗',)
@@ -346,3 +347,66 @@ def plot_mean_and_sd(ax, traces, time, color='black', alt_color='dimgray', facea
 
         ax.plot(time, mu, color=color)
         ax.fill_between(time, mu - sd, mu + sd, color=color, alpha=facealpha)
+
+
+def get_extent(stack_avg, pixel_size_um, x_offset, y_offset):
+    ps = pixel_size_um
+    w, h = stack_avg.shape[:2]
+    assert w == h
+    extent = np.array([-w / 2 * ps, +w / 2 * ps, -w / 2 * ps, +w / 2 * ps])
+    extent += (x_offset, x_offset, y_offset, y_offset)
+    return extent
+
+
+def plot_stack_average(ax, stack_avg, pixel_size_um, x_offset, y_offset, cmap='viridis', alpha=0.7, gamma=0.5):
+    extent = get_extent(stack_avg, pixel_size_um, x_offset, y_offset)
+
+    im = stack_avg.astype(float)
+    vmin = np.percentile(im, q=5, axis=(0, 1))
+    vmax = np.percentile(im, q=99, axis=(0, 1))
+    im = (im - vmin) / (vmax - vmin)
+    im = np.clip(im, 0, 1) ** gamma
+
+    ax.imshow(im.T, extent=extent, cmap=cmap, interpolation='none', alpha=alpha)
+
+    return extent
+
+
+def make_square_bounding_box(xs, ys):
+    # Step 1: Find initial min and max
+    xmin, xmax = min(xs), max(xs)
+    ymin, ymax = min(ys), max(ys)
+
+    # Step 2: Determine width and height
+    width = xmax - xmin
+    height = ymax - ymin
+
+    # Step 3: Expand the smaller side to match the larger
+    if width > height:
+        # Increase height
+        diff = width - height
+        ymin -= diff / 2
+        ymax += diff / 2
+    elif height > width:
+        # Increase width
+        diff = height - width
+        xmin -= diff / 2
+        xmax += diff / 2
+
+    return xmin, xmax, ymin, ymax
+
+
+def plot_roi_mask(ax, rois, extent):
+    _rois = -rois.copy()
+    _rois = _rois.astype(float)
+    _rois[_rois <= 0] = np.nan
+    _rois = np.repeat(np.repeat(_rois, 3, axis=0), 3, axis=0)
+    ax.imshow(_rois.T, cmap='jet', extent=extent)
+
+
+def add_rect(ax, box_xlim, box_ylim, color_crop, linewidth=1.2):
+    rect = patches.Rectangle(
+        (box_xlim[0], box_ylim[0]), box_xlim[1] - box_xlim[0], box_ylim[1] - box_ylim[0],
+        linewidth=linewidth, edgecolor=color_crop, facecolor='none', linestyle='--', clip_on=False
+    )
+    ax.add_patch(rect)
