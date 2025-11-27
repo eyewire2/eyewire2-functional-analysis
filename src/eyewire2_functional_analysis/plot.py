@@ -14,7 +14,7 @@ def plot_chirp(ax, row, stimulus_ms=None, plot_hline=True, plot_vlines=False):
         ax.plot(np.arange(0, len(trace)) * row['chirp_snippets_dt'], trace / np.max(np.abs(trace)), color='dimgray',
                 alpha=0.5, clip_on=False)
     ax.plot(np.arange(0, len(row['chirp_average_norm'])) * row['chirp_average_dt'], row['chirp_average_norm'],
-            color='darkred', alpha=0.8, clip_on=False,)
+            color='darkred', alpha=0.8, clip_on=False, )
     if plot_hline:
         ax.axhline(0, c='dimgray', ls='--')
     if plot_vlines:
@@ -34,7 +34,7 @@ def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False):
         snippets = row['bar_snippets'][:, np.array([0, 8, 16]) + i]
         time = (np.arange(0, snippets.shape[0]) + (snippets.shape[0] * 1.2 * i)) * row['bar_snippets_dt']
         for trace in snippets.T:
-            ax.plot(time, trace / vmax, color='dimgray', alpha=0.5, clip_on=False,)
+            ax.plot(time, trace / vmax, color='dimgray', alpha=0.5, clip_on=False, )
         ax.plot(time, np.mean(snippets, axis=1) / vmax, color='darkred', alpha=0.8, clip_on=False)
         ax.axhline(0, c='dimgray', ls='--')
         if annotate_dirs or annotate_symbols:
@@ -293,8 +293,8 @@ def plot_retina_orientation(ax, tdist=50, x0=0, y0=0, size=1000, fontsize=14):
 
 
 def plot_scale_bar(
-    ax, x0=0, y0=0, size=1000, tdist=70,
-    fontsize=14, text=True, unit="µm", orientation='h'
+        ax, x0=0, y0=0, size=1000, tdist=70,
+        fontsize=14, text=True, unit="µm", orientation='h'
 ):
     """
     Draws a horizontal or vertical scale bar.
@@ -333,3 +333,16 @@ def plot_scale_bar(
     else:
         raise ValueError("orientation must be 'h' or 'v'")
 
+
+def plot_mean_and_sd(ax, traces, time, color='black', alt_color='dimgray', facealpha=0.2, offset=0.0):
+    if traces.shape[0] <= 2:
+        ax.plot(time, traces[0] - np.mean(traces[0]) + offset, color=color)
+        if len(traces) == 2:
+            ax.plot(time, traces[1] - np.mean(traces[1]) + offset, color=alt_color)
+    else:
+        mu = np.mean(traces, axis=0)
+        mu = mu - np.mean(mu) + offset
+        sd = np.std(traces, axis=0)
+
+        ax.plot(time, mu, color=color)
+        ax.fill_between(time, mu - sd, mu + sd, color=color, alpha=facealpha)
