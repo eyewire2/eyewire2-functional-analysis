@@ -410,3 +410,10 @@ def add_rect(ax, box_xlim, box_ylim, color_crop, linewidth=1.2):
         linewidth=linewidth, edgecolor=color_crop, facecolor='none', linestyle='--', clip_on=False
     )
     ax.add_patch(rect)
+
+
+def plot_sac_lines(ax, xlim):
+    ax.plot(xlim, [0, 0], c='darkblue', ls='--', lw=1.5)
+    ax.text(xlim[1], 0, '  ON', va='center', ha='left', color='darkblue', fontsize=8)
+    ax.plot(xlim, [12, 12], c='darkgreen', ls='--', lw=1.5)
+    ax.text(xlim[1], 12, '  OFF', va='center', ha='left', color='darkgreen', fontsize=8)
