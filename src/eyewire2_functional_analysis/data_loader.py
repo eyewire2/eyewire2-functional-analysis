@@ -34,8 +34,8 @@ def load_df_rois_morph(morph_folder, nuc_col_master, seg_col_master, data_folder
 
     df_master = pd.read_csv(os.path.join(os.path.join(morph_folder, morph_spreadsheet_filename)), dtype=str)
 
-    assert seg_col_master in df_master.columns, f"Column '{seg_col_master}' not found in df_master"
-    assert nuc_col_master in df_master.columns, f"Column '{nuc_col_master}' not found in df_master"
+    assert seg_col_master in df_master.columns, f"Column '{seg_col_master}' not found in df_master {list(df_master.columns)}"
+    assert nuc_col_master in df_master.columns, f"Column '{nuc_col_master}' not found in df_master {list(df_master.columns)}"
 
     df_merged = pd.merge(
         df_master.set_index(nuc_col_master),

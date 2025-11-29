@@ -1,4 +1,3 @@
-import cell_mosaics
 import numpy as np
 import skeliner as sk
 from matplotlib import patches as patches
@@ -31,6 +30,7 @@ def plot_chirp(ax, row, stimulus_ms=None, plot_hline=True, plot_vlines=False):
 
 def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False):
     vmax = np.max(row['bar_snippets'])
+    
     for i, (dir, symbol) in enumerate(zip(MB_DIRS, MB_DIRS_SYMBOLS)):
         snippets = row['bar_snippets'][:, np.array([0, 8, 16]) + i]
         time = (np.arange(0, snippets.shape[0]) + (snippets.shape[0] * 1.2 * i)) * row['bar_snippets_dt']
@@ -48,7 +48,7 @@ def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False):
                 ax.text(
                     x, y, MB_DIRS_SYMBOLS[i],
                     ha='center', va='top',
-                    fontsize=14,
+                    fontsize=10,
                     fontweight='bold',
                     fontname='DejaVu Sans',
                 )
@@ -65,9 +65,11 @@ def plot_bar_dir(ax, row):
 
     if np.any(~np.isfinite(dir_component)):
         raise ValueError('dir_component not finite')
-
+    
     ax.plot(sorted_directions, np.clip(dir_component, 0, None), color='darkred', alpha=0.8, lw=2)
-    ax.set_theta_zero_location('S')
+    
+    ax.set_theta_zero_location('N')
+    
     ax.xaxis.set_tick_params(pad=-20)
     dirs = [0, 90, 180, 270]
 
@@ -75,7 +77,7 @@ def plot_bar_dir(ax, row):
     ax.set_ylim(0, np.max(dir_component))
     ax.set_xticks(np.deg2rad(dirs))
     ax.set_xticklabels([MB_DIRS_SYMBOLS[np.argmax(np.array(MB_DIRS) == d)] for d in dirs],
-                       fontsize=14, fontweight='bold', fontname='DejaVu Sans', )
+                       fontsize=10, fontweight='bold', fontname='DejaVu Sans', )
     ax.set_yticklabels([])
 
 
@@ -98,11 +100,11 @@ def plot_bar_block(ax, row, i, show_symbol=True):
     if show_symbol:
         x = time[0] + 0.5 * (time[-1] - time[0])
         y_max = np.max(row['bar_snippets'])
-        y = y_max + 0.15 * (np.max(row['bar_snippets']) - np.min(row['bar_snippets']))  # relative offset
+        y = y_max + 0.25 * (np.max(row['bar_snippets']) - np.min(row['bar_snippets']))  # relative offset
         ax.text(
             x, y, MB_DIRS_SYMBOLS[i],
             ha='center', va='top',
-            fontsize=14,
+            fontsize=10,
             fontweight='bold',
             fontname='DejaVu Sans',
         )
@@ -170,6 +172,8 @@ def plot_morph(ax, row, rad=200):
 
 
 def plot_mosaic(df, extent=(350, 1000, 0, 650)):
+    import cell_mosaics
+    
     assert df.shape[0] > 0, "No data to plot"
     mapper = cell_mosaics.CoverageDensityMapper(field_bounds=extent, resolution=500)
     for i, (seg_id, row) in enumerate(df.iterrows()):
@@ -295,7 +299,7 @@ def plot_retina_orientation(ax, tdist=50, x0=0, y0=0, size=1000, fontsize=14):
 
 def plot_scale_bar(
         ax, x0=0, y0=0, size=1000, tdist=70,
-        fontsize=14, text=True, unit="µm", orientation='h'
+        fontsize=10, text=True, unit="µm", orientation='h'
 ):
     """
     Draws a horizontal or vertical scale bar.
@@ -412,8 +416,45 @@ def add_rect(ax, box_xlim, box_ylim, color_crop, linewidth=1.2):
     ax.add_patch(rect)
 
 
-def plot_sac_lines(ax, xlim):
+def plot_sac_lines(ax, xlim, text=True):
     ax.plot(xlim, [0, 0], c='darkblue', ls='--', lw=1.5)
-    ax.text(xlim[1], 0, '  ON', va='center', ha='left', color='darkblue', fontsize=8)
     ax.plot(xlim, [12, 12], c='darkgreen', ls='--', lw=1.5)
-    ax.text(xlim[1], 12, '  OFF', va='center', ha='left', color='darkgreen', fontsize=8)
+    if text:
+        ax.text(xlim[1], 0, '  ON', va='center', ha='left', color='darkblue', fontsize=8)
+        ax.text(xlim[1], 12, '  OFF', va='center', ha='left', color='darkgreen', fontsize=8)
+
+
+def plot_ipl_profile(ax, row):
+    from pywarper.warpers import get_z_profile
+    import skeliner as sk
+    from copy import deepcopy
+    
+    skel = deepcopy(row['skel'])
+    skel.node2verts = None
+    sk.post.prune(
+        skel=skel,
+        kind="nodes",
+        nodes=np.where(skel.ntype == 2)[0]
+    )
+    zlim = (-30, 30)
+    
+    z_dict = get_z_profile(
+        skel=skel,
+        extent=zlim,
+    )
+    ipl = z_dict['x']
+    dens = z_dict['distribution']
+
+    vmax = dens.max()
+    xlim = -0.1*vmax, vmax*1.1
+
+    ax.set_aspect('auto', 'box')
+    ax.set_ylim(zlim)
+
+    plot_sac_lines(ax, xlim, text=False)
+
+    ax.set_xlim(xlim)
+    ax.plot(dens, ipl, c='darkred', lw=2)
+    #ax.set_title('xz', loc='left', y=0.9, va='top', fontsize=20)
+    ax.set(xticks=[], yticks=[], xlabel=None, ylabel=None)
+    ax.axis('off')
