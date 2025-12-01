@@ -12,7 +12,7 @@ The moving bar directions in the script were (0, 180, 45, 225, 90, 270, 135, 315
 In the setup chamber this resulted in the following directions of the moving bar (↓, ↑, ↙, ↗, ←, →, ↖, ↘), where e.g. "↓" means back to front.
 The bar width (the dimension that is orthogonal to the direction of motion) was 300 µm, the speed 1000 µm/s, and the length 1000 µm.
 
-## Retina orientation
+### Retina orientation
 The retina was from the right eye. Ventral was in the back of the setup chamber.  
 So this is the orientation of the retina in the setup chamber:
 ```
@@ -22,6 +22,14 @@ Nasal ---- Temporal
 ```
 For the MB, 0° therefore means ventral to dorsal motion.
 90° means temporal to nasal motion.
+
+In the manuscript the retina is depicted as (i.e. with a 180° rotation compared to the setup chamber):
+```
+------ Dorsal -----
+Temporal ---- Nasal 
+------ Ventral ----
+```
+In this projection (0, 180, 45, 225, 90, 270, 135, 315) corresponds to (↑, ↓, ↗, ↙, →, ←, ↘, ↖).
 
 ## Mouse camera movies
 MCs were similar as in [Höfling et al. 2024](https://elifesciences.org/articles/86860) which were derived from recordings by [Qiu et al. 2021](https://www.cell.com/current-biology/fulltext/S0960-9822(21)00676-X).
