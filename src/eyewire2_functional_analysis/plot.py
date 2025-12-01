@@ -2,11 +2,10 @@ import numpy as np
 import skeliner as sk
 from matplotlib import patches as patches
 
-MB_DIRS = (0, 180, 45, 225, 90, 270, 135, 315)
-MB_DIRS_SYMBOLS = ('↑', '↓', '↖', '↘', '←', '→', '↙', '↗',)
+MB_DIRS              = (0,  180,   45,  225,  90, 270, 135, 315)
+MB_DIRS_SYMBOLS_V_UP = ('↓', '↑', '↙', '↗', '←', '→', '↖', '↘')
+MB_DIRS_SYMBOLS_D_UP = ('↑', '↓', '↗', '↙', '→', '←', '↘', '↖')
 
-
-# MB_DIRS_SYMBOLS = ('\u2192', '\u2190', '\u2197', '\u2199', '\u2191', '\u2193', '\u2196', '\u2198')
 
 def plot_chirp(ax, row, stimulus_ms=None, plot_hline=True, plot_vlines=False):
     snippets = row['chirp_snippets']
@@ -28,10 +27,15 @@ def plot_chirp(ax, row, stimulus_ms=None, plot_hline=True, plot_vlines=False):
                 c='k', clip_on=False, lw=1, solid_capstyle='butt')
 
 
-def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False):
+def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False, ventral_up=True):
     vmax = np.max(row['bar_snippets'])
+
+    if ventral_up:
+        mb_symbols = MB_DIRS_SYMBOLS_V_UP
+    else:
+        mb_symbols = MB_DIRS_SYMBOLS_D_UP
     
-    for i, (dir, symbol) in enumerate(zip(MB_DIRS, MB_DIRS_SYMBOLS)):
+    for i, (dir_deg, symbol) in enumerate(zip(MB_DIRS, mb_symbols)):
         snippets = row['bar_snippets'][:, np.array([0, 8, 16]) + i]
         time = (np.arange(0, snippets.shape[0]) + (snippets.shape[0] * 1.2 * i)) * row['bar_snippets_dt']
         for trace in snippets.T:
@@ -43,10 +47,10 @@ def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False):
             y = 1.15
 
             if annotate_dirs:
-                ax.text(x, y, f'{dir}°', ha='center', va='top', fontsize=8)
+                ax.text(x, y, f'{dir_deg}°', ha='center', va='top', fontsize=8)
             else:
                 ax.text(
-                    x, y, MB_DIRS_SYMBOLS[i],
+                    x, y, symbol,
                     ha='center', va='top',
                     fontsize=10,
                     fontweight='bold',
@@ -54,7 +58,7 @@ def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False):
                 )
 
 
-def plot_bar_dir(ax, row):
+def plot_bar_dir(ax, row, ventral_up=True):
     if np.any(~np.isfinite(row['bar_snippets'])):
         raise ValueError('bar_snippets not finite')
 
@@ -69,19 +73,21 @@ def plot_bar_dir(ax, row):
     ax.plot(sorted_directions, np.clip(dir_component, 0, None), color='darkred', alpha=0.8, lw=2)
     
     ax.set_theta_zero_location('N')
+    ax.set_theta_direction(-1)
     
     ax.xaxis.set_tick_params(pad=-20)
     dirs = [0, 90, 180, 270]
+    mb_symbols = MB_DIRS_SYMBOLS_V_UP if ventral_up else MB_DIRS_SYMBOLS_D_UP
 
     ax.set(xlabel=None, ylabel=None, yticks=[0, np.max(dir_component)])
     ax.set_ylim(0, np.max(dir_component))
     ax.set_xticks(np.deg2rad(dirs))
-    ax.set_xticklabels([MB_DIRS_SYMBOLS[np.argmax(np.array(MB_DIRS) == d)] for d in dirs],
+    ax.set_xticklabels([mb_symbols[np.argmax(np.array(MB_DIRS) == d)] for d in dirs],
                        fontsize=10, fontweight='bold', fontname='DejaVu Sans', )
     ax.set_yticklabels([])
 
 
-def plot_bar_block(ax, row, i, show_symbol=True):
+def plot_bar_block(ax, row, i, show_symbol=True, ventral_up=False):
     """
     Plot ONE direction block (index i: 0..7) on the given Cartesian axes.
     Matches your original styling.
@@ -96,13 +102,15 @@ def plot_bar_block(ax, row, i, show_symbol=True):
     ax.plot(time, np.mean(snippets, axis=1), color='darkred', alpha=0.8)
     ax.axhline(0, c='dimgray', ls='--')
 
+    mb_symbols = MB_DIRS_SYMBOLS_V_UP if ventral_up else MB_DIRS_SYMBOLS_D_UP
+
     # label
     if show_symbol:
         x = time[0] + 0.5 * (time[-1] - time[0])
         y_max = np.max(row['bar_snippets'])
         y = y_max + 0.25 * (np.max(row['bar_snippets']) - np.min(row['bar_snippets']))  # relative offset
         ax.text(
-            x, y, MB_DIRS_SYMBOLS[i],
+            x, y, mb_symbols[i],
             ha='center', va='top',
             fontsize=10,
             fontweight='bold',
