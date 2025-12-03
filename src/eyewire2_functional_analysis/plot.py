@@ -13,7 +13,7 @@ def plot_chirp(ax, row, stimulus_ms=None, plot_hline=True, plot_vlines=False):
         ax.plot(np.arange(0, len(trace)) * row['chirp_snippets_dt'], trace / np.max(np.abs(trace)), color='dimgray',
                 alpha=0.5, clip_on=False)
     ax.plot(np.arange(0, len(row['chirp_average_norm'])) * row['chirp_average_dt'], row['chirp_average_norm'],
-            color='darkred', alpha=0.8, clip_on=False, )
+            color='black', clip_on=False, )
     if plot_hline:
         ax.axhline(0, c='dimgray', ls='--')
     if plot_vlines:
@@ -40,7 +40,7 @@ def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False, ventral_up=Tr
         time = (np.arange(0, snippets.shape[0]) + (snippets.shape[0] * 1.2 * i)) * row['bar_snippets_dt']
         for trace in snippets.T:
             ax.plot(time, trace / vmax, color='dimgray', alpha=0.5, clip_on=False, )
-        ax.plot(time, np.mean(snippets, axis=1) / vmax, color='darkred', alpha=0.8, clip_on=False)
+        ax.plot(time, np.mean(snippets, axis=1) / vmax, color='black', clip_on=False)
         ax.axhline(0, c='dimgray', ls='--')
         if annotate_dirs or annotate_symbols:
             x = time[0] + 0.5 * (time[-1] - time[0])
@@ -58,7 +58,7 @@ def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False, ventral_up=Tr
                 )
 
 
-def plot_bar_dir(ax, row, ventral_up=True):
+def plot_bar_dir(ax, row, ventral_up=True, lw=1):
     if np.any(~np.isfinite(row['bar_snippets'])):
         raise ValueError('bar_snippets not finite')
 
@@ -70,7 +70,7 @@ def plot_bar_dir(ax, row, ventral_up=True):
     if np.any(~np.isfinite(dir_component)):
         raise ValueError('dir_component not finite')
     
-    ax.plot(sorted_directions, np.clip(dir_component, 0, None), color='darkred', alpha=0.8, lw=2)
+    ax.plot(sorted_directions, np.clip(dir_component, 0, None), color='black', lw=lw)
     
     ax.set_theta_zero_location('N')
     ax.set_theta_direction(-1)
@@ -83,7 +83,7 @@ def plot_bar_dir(ax, row, ventral_up=True):
     ax.set_ylim(0, np.max(dir_component))
     ax.set_xticks(np.deg2rad(dirs))
     ax.set_xticklabels([mb_symbols[np.argmax(np.array(MB_DIRS) == d)] for d in dirs],
-                       fontsize=10, fontweight='bold', fontname='DejaVu Sans', )
+                       fontsize=10, fontweight='bold', fontname='DejaVu Sans', color='#999999')
     ax.set_yticklabels([])
 
 
@@ -99,7 +99,7 @@ def plot_bar_block(ax, row, i, show_symbol=True, ventral_up=False):
     for trace in snippets.T:
         ax.plot(time, trace, color='dimgray', alpha=0.5)
     # mean
-    ax.plot(time, np.mean(snippets, axis=1), color='darkred', alpha=0.8)
+    ax.plot(time, np.mean(snippets, axis=1), color='black', alpha=0.8)
     ax.axhline(0, c='dimgray', ls='--')
 
     mb_symbols = MB_DIRS_SYMBOLS_V_UP if ventral_up else MB_DIRS_SYMBOLS_D_UP
@@ -424,15 +424,15 @@ def add_rect(ax, box_xlim, box_ylim, color_crop, linewidth=1.2):
     ax.add_patch(rect)
 
 
-def plot_sac_lines(ax, xlim, text=True):
-    ax.plot(xlim, [0, 0], c='darkblue', ls='--', lw=1.5)
-    ax.plot(xlim, [12, 12], c='darkgreen', ls='--', lw=1.5)
+def plot_sac_lines(ax, xlim, text=True, con='#17CFB9', coff='#FFC09F', ls='-', lw=1):
+    ax.plot(xlim, [0, 0], c=con, ls=ls, lw=lw)
+    ax.plot(xlim, [12, 12], c=coff, ls=ls, lw=lw)
     if text:
-        ax.text(xlim[1], 0, '  ON', va='center', ha='left', color='darkblue', fontsize=8)
-        ax.text(xlim[1], 12, '  OFF', va='center', ha='left', color='darkgreen', fontsize=8)
+        ax.text(xlim[1], 0, '  ON', va='top', ha='right', color=con, fontsize=8)
+        ax.text(xlim[1], 12, '  OFF', va='bottom', ha='right', color=coff, fontsize=8)
 
 
-def plot_ipl_profile(ax, row):
+def plot_ipl_profile(ax, row, c='#DA3B3C', text=False):
     from pywarper.warpers import get_z_profile
     import skeliner as sk
     from copy import deepcopy
@@ -459,10 +459,9 @@ def plot_ipl_profile(ax, row):
     ax.set_aspect('auto', 'box')
     ax.set_ylim(zlim)
 
-    plot_sac_lines(ax, xlim, text=False)
+    plot_sac_lines(ax, xlim, text=text)
 
     ax.set_xlim(xlim)
-    ax.plot(dens, ipl, c='darkred', lw=2)
-    #ax.set_title('xz', loc='left', y=0.9, va='top', fontsize=20)
+    ax.plot(dens, ipl, c=c, lw=1)
     ax.set(xticks=[], yticks=[], xlabel=None, ylabel=None)
     ax.axis('off')
