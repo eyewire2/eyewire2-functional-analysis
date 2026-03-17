@@ -1,16 +1,18 @@
 # Stimulus description
 In Eyewire2 stimuli were chirp, moving bar (MB) and mouse camera movies (MCs).
 
-The original QDSpy stimulator scripts for [chirp](./Chirp.py), [MB](./DS.py) and [MCs](MouseCam_Right.py) are included in this folder.  
-For completeness, also the left-retina version was included [MouseCam_Left.py](), which was not used in Eyewire2.
+The original QDSpy stimulator scripts for [chirp](./QDSpy/Chirp.py), [MB](./QDSpy//DS.py) 
+and [MCs](./QDSpy/MouseCam_Right.py) are included in this folder.
 
 ## Chirp
 The chirp had a spot with a diameter of 1000 µm and otherwise follows previous publications.
+[Chirp PDF](./global_chirp/chirp1000_setup3.pdf)
 
 ## Moving bar 
 The moving bar directions in the script were (0, 180, 45, 225, 90, 270, 135, 315) degrees.  
 In the setup chamber this resulted in the following directions of the moving bar (↓, ↑, ↙, ↗, ←, →, ↖, ↘), where e.g. "↓" means back to front.
 The bar width (the dimension that is orthogonal to the direction of motion) was 300 µm, the speed 1000 µm/s, and the length 1000 µm.
+[Moving Bar PDF](./moving_bar/DS_setup3.pdf)
 
 ### Retina orientation
 The retina was from the right eye. Ventral was in the back of the setup chamber.  
