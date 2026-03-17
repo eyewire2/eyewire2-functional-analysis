@@ -144,7 +144,7 @@ def build_movie(p, sequence_column=None, color_sequence='BGR'):
 # Main Entry Point
 # -----------------------------
 def main(sequence_column=None, color_sequence='BGR',
-         qdspy_path="../QDSpy"):
+         qdspy_path=os.path.join(os.path.abspath(os.path.dirname(__file__)), "../QDSpy")):
     """
     Main function to generate the stimulus sequence.
     Set sequence_column to force a specific column, or leave as None for random.
@@ -155,6 +155,11 @@ def main(sequence_column=None, color_sequence='BGR',
         qdspy_path: Path to the folder containing the QDSpy stimulus files
                     (montage images and index file).
     """
+    # print absolute path to folder
+    print("QDSpy path:", os.path.abspath(qdspy_path))
+
+    assert os.path.exists(qdspy_path), f"QDSpy path does not exist: {qdspy_path}"
+
     # Parameter dictionary
     p = {
         "durSnippet_s": 5.0,             # each snippet is 5 seconds
@@ -167,7 +172,10 @@ def main(sequence_column=None, color_sequence='BGR',
     }
 
     sequence, used_column = build_movie(p, sequence_column, color_sequence=color_sequence)
-    np.save(f"mc_arrays/MC{used_column}.npy", sequence)
+    script_dir = os.path.abspath(os.path.dirname(__file__))
+    out_path = os.path.join(script_dir, "mc_arrays", f"MC{used_column}.npy")
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    np.save(out_path, sequence)
 
 
 if __name__ == "__main__":
