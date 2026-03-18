@@ -6,10 +6,10 @@
 
 This repository hosts the functional data from OGB-1 recordings in the Eyewire II dataset.
 
-This is work-in-progress and currently holds 
-- pre-processed Calcium traces from recorded over five recording fields: [h5 files](https://github.com/eulerlab/eyewire2-functional-analysis/tree/main/data/preprocessed-data)
-- example code to [load](https://github.com/eulerlab/eyewire2-functional-analysis/blob/main/notebooks/load_data.ipynb) and [plot](https://github.com/eulerlab/eyewire2-functional-analysis/blob/main/notebooks/plot_data_overview/plot_data_overview.ipynb) the pre-processed data
-- [summary figures](https://github.com/eulerlab/eyewire2-functional-analysis/tree/main/notebooks/plot_data_overview/figures) of all cells, grouped by a preliminary clustering and recording field
+This is work-in-progress and currently holds:
+- pre-processed calcium traces from recordings over five recording fields, stored as [parquet files](data/preprocessed-data/)
+- morphological data (proofread cell master list, 2P-to-EM ROI mapping) in [data/morphological-data/](data/morphological-data/)
+- tutorial notebooks to [plot raw traces](notebooks/tutorial/plot_raw_data/plot_raw_data.ipynb) and [plot a data overview](notebooks/tutorial/plot_data_overview/plot_data_overview.ipynb)
 
 Documentation is still incomplete:
 - a description of the preprocessed data can be found [here](data/preprocessed-data/README.md).
@@ -26,3 +26,36 @@ To use the code in this repository out of the box, you can use [uv](https://docs
 - Run `uv run jupyter lab` to start jupyter lab  - it should open in your browser, and allows you to run our notebooks.
 
 On the first call, `uv run` will install all dependencies into a `uv` virtual environment (placed in the `.venv` folder), which is then invoked on all further calls of `uv run`.
+
+### Loading the data
+
+All data loading is handled by `eyewire2_functional_analysis.data_loader`. The easiest way to load all three DataFrames at once is:
+
+```python
+from eyewire2_functional_analysis import data_loader
+
+data_folder = "data/preprocessed-data"
+
+df_rois, df_fields, df_outline = data_loader.load_all_dfs(data_folder)
+```
+
+You can also load each DataFrame individually using `load_df_rois()`, `load_df_fields()`, or `load_df_outline()`.
+
+To merge the ROI-level data with the morphological master spreadsheet:
+
+```python
+morph_folder = "data/morphological-data"
+version = "2026-03-17"  # replace with the date of your master list
+
+df_rois_morph = data_loader.load_df_rois_morph(
+    morph_folder=morph_folder,
+    morph_spreadsheet_filename=f"Eyewire II Proofread Cells Master List - All Cells {version}.csv",
+    nuc_col_master="Final NucID",
+    seg_col_master="Final SegID",
+    data_folder=data_folder,
+)
+```
+
+See the tutorial notebooks for full usage examples:
+- [plot_raw_data.ipynb](notebooks/tutorial/plot_raw_data/plot_raw_data.ipynb) — load data and plot raw + preprocessed traces for individual ROIs
+- [plot_data_overview.ipynb](notebooks/tutorial/plot_data_overview/plot_data_overview.ipynb) — plot chirp and bar response overviews grouped by cell type and recording field
