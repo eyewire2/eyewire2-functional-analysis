@@ -59,3 +59,4 @@ df_rois_morph = data_loader.load_df_rois_morph(
 See the tutorial notebooks for full usage examples:
 - [plot_raw_data.ipynb](notebooks/tutorial/plot_raw_data/plot_raw_data.ipynb) — load data and plot raw + preprocessed traces for individual ROIs
 - [plot_data_overview.ipynb](notebooks/tutorial/plot_data_overview/plot_data_overview.ipynb) — plot chirp and bar response overviews grouped by cell type and recording field
+- [plot_morph_and_func.ipynb](notebooks/tutorial/plot_morphology/plot_morph_and_func.ipynb) — plot morphology and functional data for individual cells
