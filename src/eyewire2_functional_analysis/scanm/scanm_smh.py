@@ -312,14 +312,17 @@ class SMH(object):
 
     @property
     def GUID(self):
+        """str: GUID hex string read from the SMH pre-header."""
         return self._SMHPreHdrDict["GUID"]
 
     @property
     def filePath(self):
+        """str: Base file path (without extension) of the loaded SMH file."""
         return self._fPath
 
     @property
     def isSMHReady(self):
+        """bool: ``True`` if an SMH file has been successfully loaded."""
         return self._isSMHReady
 
     ''' Scan mode and type
@@ -327,10 +330,12 @@ class SMH(object):
 
     @property
     def scanMode(self):
+        """int: ScanM scan mode code (e.g. ``ScM_scanMode_XYImage = 0``)."""
         return self.get(SCMIO_keys.USER_ScanMode)
 
     @property
     def scanType(self):
+        """int: ScanM scan type code (e.g. ``ScM_scanType_timelapsed = 10``)."""
         return self.get(SCMIO_keys.USER_ScanType)
 
     ''' Pixel-related information
@@ -338,14 +343,17 @@ class SMH(object):
 
     @property
     def pixSize_byte(self):
+        """int: Pixel data size in bytes (typically 2 or 8)."""
         return self.get(SCMIO_keys.PixelSizeInBytes)
 
     @property
     def pixDurTarget_us(self):
+        """float: Targeted pixel dwell time in microseconds."""
         return self.get(SCMIO_keys.TargetedPixDur)
 
     @property
     def pixDur_us(self):
+        """float: Actual (realised) pixel dwell time in microseconds."""
         return self.get(SCMIO_keys.RealPixDur)
 
     ''' Number of recorded frames
@@ -353,6 +361,7 @@ class SMH(object):
 
     @property
     def nFr(self):
+        """int: Number of recorded frames, or ``-1`` if not yet determined."""
         try:
             return self._nFr
         except AttributeError:
@@ -363,6 +372,7 @@ class SMH(object):
 
     @property
     def zoom(self):
+        """float: Optical zoom factor used during the scan."""
         return self.get(SCMIO_keys.USER_zoom)
 
     ''' Parameters on frame structure
@@ -370,14 +380,17 @@ class SMH(object):
 
     @property
     def nPixBufPerFr(self):
+        """int: Number of pixel buffers per frame (``ChunksPerFrame``)."""
         return self.get(SCMIO_keys.USER_divFrameBufReq)
 
     @property
     def nStimBufPerFr(self):
+        """int: Number of stimulus buffers per frame."""
         return self.get(SCMIO_keys.USER_stimBufPerFr)
 
     @property
     def nImgPerFr(self):
+        """int: Number of images per frame (usually 1)."""
         return self.get(SCMIO_keys.USER_nImgPerFr)
 
     ''' Frame dimensions
@@ -385,42 +398,52 @@ class SMH(object):
 
     @property
     def dxFr_pix(self):
+        """int: Frame width in pixels (fast axis)."""
         return self.get(SCMIO_keys.USER_dxPix)
 
     @property
     def dyFr_pix(self):
+        """int: Frame height in pixels (slow axis 1)."""
         return self.get(SCMIO_keys.USER_dyPix)
 
     @property
     def dzFr_pix(self):
+        """int: Frame depth in pixels (slow axis 2 / z)."""
         return self.get(SCMIO_keys.USER_dzPix)
 
     @property
     def dxOffs_pix(self):
+        """int: Pixel offset along the fast (x) axis."""
         return self.get(SCMIO_keys.USER_nXPixLineOffs)
 
     @property
     def dxRetrace_pix(self):
+        """int: Number of retrace pixels along the fast (x) axis."""
         return self.get(SCMIO_keys.USER_nPixRetrace)
 
     @property
     def dxFrDec_pix(self):
+        """int: Decoded frame width in pixels."""
         return self.get(SCMIO_keys.USER_dxFrDecoded)
 
     @property
     def dyFrDec_pix(self):
+        """int: Decoded frame height in pixels."""
         return self.get(SCMIO_keys.USER_dyFrDecoded)
 
     @dyFrDec_pix.setter
     def dyFrDec_pix(self, v):
+        """Set the decoded frame height in pixels."""
         self.set(SCMIO_keys.USER_dyFrDecoded, v)
 
     @property
     def dzFrDec_pix(self):
+        """int: Decoded frame depth in pixels."""
         return self.get(SCMIO_keys.USER_dzFrDecoded)
 
     @property
     def aspectRatioFr(self):
+        """float: Aspect ratio of the scan frame (width / height)."""
         return self.get(SCMIO_keys.USER_aspectRatioFrame)
 
     ''' Stimulus-related
@@ -428,10 +451,12 @@ class SMH(object):
 
     @property
     def nStimBuf(self):
+        """int: Number of stimulus buffers."""
         return self.get(SCMIO_keys.NumberOfStimBufs)
 
     @property
     def stimChMask(self):
+        """int: Bitmask of active stimulus channels."""
         return self.get(SCMIO_keys.StimulusChannelMask)
 
     ''' Input-related
@@ -439,30 +464,37 @@ class SMH(object):
 
     @property
     def nInputCh(self):
+        """int: Number of active analog-input channels."""
         return self.get(SCMIO_keys.NumberOfInputChans)
 
     @property
     def inputChMask(self):
+        """int: Bitmask of active analog-input channels."""
         return self.get(SCMIO_keys.InputChannelMask)
 
     @property
     def nPixBufsSet(self):
+        """int: Total number of pixel buffers set for this recording."""
         return self.get(SCMIO_keys.NumberOfPixBufsSet)
 
     @nPixBufsSet.setter
     def nPixBufsSet(self, v):
+        """Set the total number of pixel buffers."""
         self.set(SCMIO_keys.NumberOfPixBufsSet, v)
 
     @property
     def pixBufCounter(self):
+        """int: Number of pixel buffers actually recorded."""
         return self.get(SCMIO_keys.PixBufCounter)
 
     @pixBufCounter.setter
     def pixBufCounter(self, v):
+        """Set the pixel buffer counter value."""
         self.set(SCMIO_keys.PixBufCounter, v)
 
     @property
     def pixBufLenList(self):
+        """numpy.ndarray: Array of pixel buffer lengths per input channel."""
         return self.get(SCMIO_keys.InChan_PixBufLenList)
 
     '''
@@ -503,6 +535,7 @@ class SMH(object):
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def summary(self):
+        """Print a human-readable summary of the key SMH header parameters to stdout."""
         print(f"Summary")
         print(f"-------")
         s = ScM_scanModeStr[self.scanMode]

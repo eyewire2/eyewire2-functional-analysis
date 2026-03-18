@@ -33,7 +33,15 @@ def restore_numpy_arrays(df, verbose=False):
     df_restored = df.copy()
 
     def is_nested_array_structure(val):
-        """Check if a value is a nested array structure that should be converted to numpy array."""
+        """Check if a value is a nested array structure that should be converted to a numpy array.
+
+        Args:
+            val: The value to inspect.
+
+        Returns:
+            bool: ``True`` if ``val`` is a numpy object array containing arrays,
+            or a nested list (list of lists/arrays).
+        """
 
         # Check for numpy object arrays containing other arrays (from parquet loading)
         if isinstance(val, np.ndarray) and val.dtype == object:
@@ -53,7 +61,19 @@ def restore_numpy_arrays(df, verbose=False):
         return False
 
     def convert_to_numpy_array(val):
-        """Convert nested structure to proper numpy array."""
+        """Convert a nested list or numpy object array to a regular numpy array.
+
+        Attempts ``np.stack`` first for object arrays, falling back to
+        ``np.array`` on the list representation. Returns the value unchanged
+        if conversion fails or if ``val`` is ``None``/NaN.
+
+        Args:
+            val: A nested list, numpy object array, or scalar value.
+
+        Returns:
+            numpy.ndarray or original value: The converted array, or ``val``
+            if conversion is not possible.
+        """
 
         # Handle numpy object arrays (from parquet)
         if isinstance(val, np.ndarray) and val.dtype == object:

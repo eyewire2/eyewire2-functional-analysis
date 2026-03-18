@@ -18,6 +18,12 @@ class StimBuf(object):
     """
 
     def __init__(self, smh):
+        """Initialise the StimBuf object and populate it from the given SMH header.
+
+        Args:
+            smh: A loaded :class:`SMH` (or :class:`SMP`) header object from which
+                stimulus-buffer parameters are read.
+        """
         self._reset()
         self._smh = smh
         self._populate()
@@ -29,6 +35,11 @@ class StimBuf(object):
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     def _populate(self):
+        """Extract stimulus-buffer parameters from the associated SMH header object.
+
+        Reads the scan-path function name from the header to determine whether an
+        external scan function was used, and sets ``pixDecodeMode`` accordingly.
+        """
         nStimBuf = self._smh.nStimBuf
         lenStimBuf = self._smh.pixBufLenList[0]
         sUserScanFFull = self._smh.get(SCMIO_keys.USER_scanPathFunc)

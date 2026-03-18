@@ -133,6 +133,14 @@ BADEN_GROUP_ID_NAMES = {
 
 
 def baden_cluster_id_to_cluster_name(cluster_id):
+    """Return the Baden cluster name string for a given cluster ID (1-75).
+
+    Args:
+        cluster_id: Integer cluster ID in the range 1–75.
+
+    Returns:
+        str: The cluster name (e.g. ``'17a'``), or ``'Unknown'`` if out of range.
+    """
     cluster_id = int(cluster_id)
     if cluster_id < 1 or cluster_id > 75:
         return 'Unknown'
@@ -143,6 +151,15 @@ def baden_cluster_id_to_cluster_name(cluster_id):
 
 
 def baden_cluster_name_to_cluster_id(cluster_name):
+    """Return the Baden cluster ID integer for a given cluster name string.
+
+    Args:
+        cluster_name: Cluster name string (e.g. ``'17a'``). Pass ``'Unknown'``
+            to receive ``-1``.
+
+    Returns:
+        int: The cluster ID (1–75), or ``-1`` for ``'Unknown'``.
+    """
     cluster_name = str(cluster_name)
     if cluster_name == 'Unknown':
         return -1
@@ -153,6 +170,14 @@ def baden_cluster_name_to_cluster_id(cluster_name):
 
 
 def baden_cluster_id_to_group_id(cluster_id):
+    """Return the Baden group ID for a given cluster ID.
+
+    Args:
+        cluster_id: Integer cluster ID in the range 1–75.
+
+    Returns:
+        int: The group ID (1–46), or ``-1`` if ``cluster_id`` is out of range.
+    """
     cluster_id = int(cluster_id)
     if cluster_id < 1 or cluster_id > 75:
         return -1
@@ -163,6 +188,15 @@ def baden_cluster_id_to_group_id(cluster_id):
 
 
 def baden_cluster_id_to_supergroup(cluster_id):
+    """Return the Baden supergroup label for a given cluster ID.
+
+    Args:
+        cluster_id: Integer cluster ID in the range 1–75.
+
+    Returns:
+        str: The supergroup label (e.g. ``'OFF'``, ``'Fast ON'``, ``'dAC'``),
+            or ``'Unknown'`` if out of range.
+    """
     cluster_id = int(cluster_id)
     if cluster_id < 1 or cluster_id > 75:
         return 'Unknown'
@@ -173,6 +207,15 @@ def baden_cluster_id_to_supergroup(cluster_id):
 
 
 def baden_group_id_to_supergroup(group_id):
+    """Return the Baden supergroup label for a given group ID.
+
+    Args:
+        group_id: Integer group ID in the range 1–46.
+
+    Returns:
+        str: The supergroup label (e.g. ``'OFF'``, ``'Slow ON'``, ``'dAC'``),
+            or ``'Unknown'`` if out of range.
+    """
     group_id = int(group_id)
     if group_id < 1 or group_id > 46:
         return 'Unknown'
@@ -183,6 +226,16 @@ def baden_group_id_to_supergroup(group_id):
 
 
 def baden_group_id_to_group_name(group_id, shorten=False):
+    """Return the descriptive name for a Baden group ID.
+
+    Args:
+        group_id: Integer group ID in the range 1–46.
+        shorten: If ``True``, abbreviate common words (e.g. ``'sustained'`` →
+            ``'sus.'``) via :func:`shorten_baden_name`.
+
+    Returns:
+        str: The group name (e.g. ``'Off DS'``), or ``'Unknown'`` if out of range.
+    """
     group_id = int(group_id)
     if group_id < 1 or group_id > 46:
         return 'Unknown'
@@ -193,6 +246,17 @@ def baden_group_id_to_group_name(group_id, shorten=False):
 
 
 def shorten_baden_name(name):
+    """Abbreviate common words in a Baden group name string.
+
+    Replaces ``'frequency'`` → ``'freq.'``, ``'sustained'`` → ``'sus.'``,
+    ``'transient'`` → ``'trans.'``, and ``'suppressed'`` → ``'suppr.'``.
+
+    Args:
+        name: Full group name string.
+
+    Returns:
+        str: The abbreviated name string.
+    """
     name = name.replace('frequency', 'freq.')
     name = name.replace('sustained', 'sus.')
     name = name.replace('transient', 'trans.')
@@ -201,6 +265,21 @@ def shorten_baden_name(name):
 
 
 def baden16_cluster_probs_to_info(probs):
+    """Convert a vector of 75 per-cluster probabilities to aggregated classification info.
+
+    Args:
+        probs: Array-like of length 75 containing probabilities for each of the
+            75 Baden clusters (sum need not equal 1).
+
+    Returns:
+        tuple: ``(cluster_id, group_id, supergroup, prob_cluster, prob_group,
+        prob_supergroup, prob_class)`` where the ``prob_*`` values are summed
+        probabilities at the respective level and ``prob_class`` is the probability
+        of belonging to the predicted broad class (RGC vs. dAC).
+
+    Raises:
+        ValueError: If ``probs`` does not have exactly 75 elements.
+    """
     if len(probs) != 75:
         raise ValueError(f"Expected 75 probabilities corresponding to 75 Baden clusters, got {len(probs)}.")
 

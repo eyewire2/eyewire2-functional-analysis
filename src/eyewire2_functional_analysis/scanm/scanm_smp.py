@@ -384,9 +384,22 @@ class SMP(SMH):
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     @property
     def isSMPReady(self):
+        """bool: ``True`` if a pixel data file has been successfully loaded."""
         return self._isSMPReady
 
     def getData(self, ch=0, crop=False):
+        """Return pixel data for the specified analog-input channel.
+
+        Args:
+            ch: AI channel index to retrieve (0-based).
+            crop: If ``True``, the pixel-offset and retrace columns are removed,
+                returning only the imaging region.
+
+        Returns:
+            numpy.ndarray or None: Array of shape ``(nFr, dSlow, dFast)`` for the
+            requested channel, cropped along the fast axis when ``crop=True``.
+            Returns ``None`` if the channel does not exist.
+        """
         # Return data for the AIn channel `ch` or None, if channel does not exist.
         # if `crop` is True, then crop to imaging region
         for j in range(SCMIO_maxInputChans):

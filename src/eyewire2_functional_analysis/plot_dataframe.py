@@ -5,6 +5,31 @@ from matplotlib import pyplot as plt
 
 def plot_df_chirp_and_bar(df, id_col='Nuc ID', type_col='Cell Type', title='',
                           chirp_q_thresh=0.45, bar_q_thresh=0.6):
+    """Plot chirp and moving-bar responses for all rows in a ROI-level DataFrame.
+
+    Creates a multi-panel figure showing chirp traces, moving-bar time components,
+    soma diameter, quality indices, and DS/OS p-values for each ROI.
+
+    Args:
+        df: DataFrame with one row per ROI. Must contain columns including
+            ``chirp_average_norm``, ``chirp_average_dt``, ``bar_time_component``,
+            ``bar_snippets_dt``, ``qfilt``, ``roi_dia_um``, ``bar_ds_pvalue``,
+            ``bar_os_pvalue``, ``chirp_qidx``, ``bar_qidx``, ``field``,
+            ``roi_id``, plus ``id_col`` and ``type_col``.
+        id_col: Column name used as the ROI/nucleus identifier label.
+        type_col: Column name used for the cell-type label.
+        title: Title string displayed above the annotation panel.
+        chirp_q_thresh: Quality-index threshold for chirp; ROIs below this are
+            rendered semi-transparently.
+        bar_q_thresh: Quality-index threshold for moving bar; ROIs below this are
+            rendered semi-transparently.
+
+    Returns:
+        tuple: ``(fig, axs)`` – the Matplotlib Figure and array of Axes.
+
+    Raises:
+        Exception: If ``df`` is empty or ``id_col`` / ``type_col`` are missing.
+    """
     if df.shape[0] == 0:
         raise Exception('No data found')
     if id_col not in df.columns:

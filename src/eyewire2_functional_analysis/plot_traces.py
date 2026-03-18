@@ -3,6 +3,23 @@ import numpy as np
 
 
 def plot_trace_and_trigger(time, trace, triggertimes, trace_norm=None, title=None, ax=None, label=None):
+    """Plot a fluorescence trace with trigger-time markers.
+
+    Optionally overlays a normalised version of the trace on a twin y-axis.
+
+    Args:
+        time: 1-D time array.
+        trace: 1-D fluorescence trace array aligned with ``time``.
+        triggertimes: 1-D array of trigger times (in the same units as ``time``).
+            Empty arrays are handled gracefully.
+        trace_norm: Optional normalised trace to overlay on a twin y-axis.
+        title: Optional axes title string.
+        ax: Existing Matplotlib Axes to plot on. If ``None``, a new figure is created.
+        label: Legend label for the main trace.
+
+    Returns:
+        matplotlib.axes.Axes: The primary axes containing the plot.
+    """
     if ax is None:
         fig, ax = plt.subplots(1, 1, figsize=(10, 2))
     if title is not None:
@@ -29,6 +46,14 @@ def plot_trace_and_trigger(time, trace, triggertimes, trace_norm=None, title=Non
 
 
 def plot_traces(time, traces, ax=None, title=None):
+    """Plot multiple traces on a single axes with automatic alpha scaling.
+
+    Args:
+        time: 1-D time array.
+        traces: 2-D array of shape ``(n_traces, time)`` or iterable of 1-D arrays.
+        ax: Existing Matplotlib Axes to plot on. If ``None``, a new figure is created.
+        title: Optional axes title string.
+    """
     if ax is None:
         fig, ax = plt.subplots(1, 1, figsize=(10, 2))
     if title is not None:
@@ -38,6 +63,24 @@ def plot_traces(time, traces, ax=None, title=None):
 
 
 def get_aligned_snippets_times(snippets_times, raise_error=True, tol=1e-4):
+    """Return a single aligned time vector from a 2-D array of snippet time stamps.
+
+    Subtracts the per-snippet offset (first row), checks consistency across snippets,
+    and returns the mean time axis.
+
+    Args:
+        snippets_times: 2-D array of shape ``(time_points, n_snippets)`` containing
+            absolute time stamps for each snippet.
+        raise_error: If ``True``, raise a ``ValueError`` when the standard deviation
+            across snippets exceeds ``tol``; otherwise issue a warning.
+        tol: Maximum acceptable per-sample standard deviation across snippets.
+
+    Returns:
+        numpy.ndarray: 1-D array of aligned (mean) time values.
+
+    Raises:
+        ValueError: If snippet times are inconsistent and ``raise_error`` is ``True``.
+    """
     snippets_times = snippets_times - snippets_times[0, :]
 
     is_inconsistent = np.any(np.std(snippets_times, axis=1) > tol)

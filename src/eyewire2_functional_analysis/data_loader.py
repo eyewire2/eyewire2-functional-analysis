@@ -6,6 +6,14 @@ from eyewire2_functional_analysis.io import restore_numpy_arrays
 
 
 def load_parquet_df(filepath):
+    """Load a parquet file and restore any serialised numpy arrays.
+
+    Args:
+        filepath: Path to the ``.parquet`` file.
+
+    Returns:
+        pandas.DataFrame: DataFrame with numpy arrays restored in object columns.
+    """
     df_flat = pd.read_parquet(filepath)
     df = restore_numpy_arrays(df_flat)
     df = df.map(lambda x: np.array(x) if isinstance(x, list) else x)
@@ -13,6 +21,17 @@ def load_parquet_df(filepath):
 
 
 def load_df_rois(data_folder):
+    """Load and concatenate all GCL ROI-level parquet files from ``data_folder``.
+
+    Reads five parquet files named ``df_eyewire2_roi_level_GCL{0..4}.parquet``,
+    concatenates them, and adds a boolean ``qfilt`` column based on quality indices.
+
+    Args:
+        data_folder: Path to the directory containing the parquet files.
+
+    Returns:
+        pandas.DataFrame: Combined ROI-level DataFrame with ``qfilt`` column.
+    """
     df_rois = pd.concat([
         load_parquet_df(os.path.join(data_folder, f'df_eyewire2_roi_level_GCL{i}.parquet'))
         for i in range(5)])
@@ -21,16 +40,40 @@ def load_df_rois(data_folder):
 
 
 def load_df_fields(data_folder):
+    """Load the field-level parquet file from ``data_folder``.
+
+    Args:
+        data_folder: Path to the directory containing ``df_eyewire2_field_level.parquet``.
+
+    Returns:
+        pandas.DataFrame: Field-level DataFrame.
+    """
     df_fields = load_parquet_df(os.path.join(data_folder, 'df_eyewire2_field_level.parquet'))
     return df_fields
 
 
 def load_df_outline(data_folder):
+    """Load the outline parquet file from ``data_folder``.
+
+    Args:
+        data_folder: Path to the directory containing ``df_eyewire2_outline.parquet``.
+
+    Returns:
+        pandas.DataFrame: Outline DataFrame.
+    """
     df_outline = load_parquet_df(os.path.join(data_folder, 'df_eyewire2_outline.parquet'))
     return df_outline
 
 
 def load_all_dfs(data_folder):
+    """Load ROI-level, field-level, and outline DataFrames in one call.
+
+    Args:
+        data_folder: Path to the directory containing all required parquet files.
+
+    Returns:
+        tuple: ``(df_rois, df_fields, df_outline)`` – the three DataFrames.
+    """
     df_rois = load_df_rois(data_folder)
     df_fields = load_df_fields(data_folder)
     df_outline = load_df_outline(data_folder)
@@ -39,6 +82,31 @@ def load_all_dfs(data_folder):
 
 def load_df_rois_morph(morph_folder, nuc_col_master, seg_col_master, data_folder=None, df_rois=None,
                        morph_spreadsheet_filename="Eyewire II Proofread Cells Master List - All Cells 2025-11-24.csv"):
+    """Load and merge the ROI-level DataFrame with the morphology master spreadsheet.
+
+    Reads a CSV master list of proofread cells and performs an inner join with the
+    ROI-level DataFrame on the nucleus ID column.
+
+    Args:
+        morph_folder: Path to the directory containing the morphology spreadsheet.
+        nuc_col_master: Column name in the master CSV used as the nucleus ID key.
+        seg_col_master: Column name in the master CSV used as the segment ID key
+            (validated to exist but not used as the join key directly).
+        data_folder: Path to the directory containing parquet files. Required when
+            ``df_rois`` is ``None``.
+        df_rois: Pre-loaded ROI-level DataFrame. If ``None``, it is loaded from
+            ``data_folder``.
+        morph_spreadsheet_filename: Filename of the CSV master list within
+            ``morph_folder``.
+
+    Returns:
+        pandas.DataFrame: Merged DataFrame containing columns from both the master
+        spreadsheet and the ROI-level data, indexed by nucleus ID.
+
+    Raises:
+        AssertionError: If required columns are missing from the master spreadsheet,
+            or if ``data_folder`` is not provided when ``df_rois`` is ``None``.
+    """
     if df_rois is None:
         assert data_folder is not None, "data_folder must be provided if df_rois is None"
         df_rois = load_df_rois(data_folder)

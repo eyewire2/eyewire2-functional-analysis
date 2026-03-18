@@ -293,6 +293,14 @@ def scm_load_pre_header(fPath, offset=0):
 
 
 def decode_file_type(msg):
+    """Decode a raw byte sequence representing a ScanM file-type identifier.
+
+    Args:
+        msg: Byte sequence (e.g. a tuple of integers) to decode as UTF-8.
+
+    Returns:
+        str: The decoded file-type string, or ``'unknown'`` if decoding fails.
+    """
     try:
         return bytearray(msg).decode("utf-8")
     except Exception as e:
