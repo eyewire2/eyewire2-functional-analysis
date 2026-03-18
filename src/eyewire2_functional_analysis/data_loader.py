@@ -1,7 +1,8 @@
 import os
 
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 from eyewire2_functional_analysis.io import restore_numpy_arrays
 
 
@@ -80,7 +81,12 @@ def load_all_dfs(data_folder):
     return df_rois, df_fields, df_outline
 
 
-def load_df_rois_morph(morph_folder, nuc_col_master, seg_col_master, data_folder=None, df_rois=None,
+def load_df_rois_morph(morph_folder, nuc_col_master,
+                       seg_col_master=(
+                               'Updated Seg ID\n(Feb 04, 2026)\nIF YOU UPDATE THIS COLUMN, ALSO UPDATE Final SegID!',
+                               'Updated Seg ID (Sept 2)',
+                               'Final SegID'),
+                       data_folder=None, df_rois=None,
                        morph_spreadsheet_filename="Eyewire II Proofread Cells Master List - All Cells 2025-11-24.csv"):
     """Load and merge the ROI-level DataFrame with the morphology master spreadsheet.
 
@@ -90,8 +96,8 @@ def load_df_rois_morph(morph_folder, nuc_col_master, seg_col_master, data_folder
     Args:
         morph_folder: Path to the directory containing the morphology spreadsheet.
         nuc_col_master: Column name in the master CSV used as the nucleus ID key.
-        seg_col_master: Column name in the master CSV used as the segment ID key
-            (validated to exist but not used as the join key directly).
+        seg_col_master : Column or tuple of columns used to find Final SegID in the master spreadsheet.
+            The function will check these columns in order and use the first non-null value as the 'Latest SegID'.
         data_folder: Path to the directory containing parquet files. Required when
             ``df_rois`` is ``None``.
         df_rois: Pre-loaded ROI-level DataFrame. If ``None``, it is loaded from
@@ -111,15 +117,31 @@ def load_df_rois_morph(morph_folder, nuc_col_master, seg_col_master, data_folder
         assert data_folder is not None, "data_folder must be provided if df_rois is None"
         df_rois = load_df_rois(data_folder)
 
-    df_master = pd.read_csv(os.path.join(os.path.join(morph_folder, morph_spreadsheet_filename)), dtype=str).dropna(axis=1, how='all')
+    df_master = pd.read_csv(os.path.join(os.path.join(morph_folder, morph_spreadsheet_filename)), dtype=str).dropna(
+        axis=1, how='all')
 
-    assert seg_col_master in df_master.columns, f"Column '{seg_col_master}' not found in df_master {list(df_master.columns)}"
     assert nuc_col_master in df_master.columns, f"Column '{nuc_col_master}' not found in df_master {list(df_master.columns)}"
+
+    # Normalise seg_col_master to a tuple so it works whether a single string or tuple was passed
+    if isinstance(seg_col_master, str):
+        seg_col_master = (seg_col_master,)
+
+    missing = [c for c in seg_col_master if c not in df_master.columns]
+    assert not missing, f"seg_col_master column(s) not found in df_master: {missing}"
+
+    # Drop duplicates in df_master based on the nucleus ID column, keeping the first occurrence
+    df_master = df_master.drop_duplicates(subset=nuc_col_master, keep='first')
 
     df_merged = pd.merge(
         df_master.set_index(nuc_col_master),
         df_rois.set_index(df_rois['nuc_id'].astype(str)),
         left_index=True, right_index=True, how='inner'
     ).reset_index()
+
+    # Fold seg_col_master columns in order, taking the first non-null value as Latest SegID
+    latest = df_merged[seg_col_master[0]]
+    for col in seg_col_master[1:]:
+        latest = latest.combine_first(df_merged[col])
+    df_merged['Latest SegID'] = latest
 
     return df_merged
