@@ -490,7 +490,6 @@ name = "eyewire2-functional-analysis"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "cell-mosaics" },
     { name = "fastparquet" },
     { name = "h5py" },
     { name = "jupyter" },
@@ -500,16 +499,20 @@ dependencies = [
     { name = "pandas" },
     { name = "pandas-stubs" },
     { name = "plotly" },
-    { name = "pywarper" },
     { name = "seaborn" },
     { name = "shapely" },
-    { name = "skeliner" },
     { name = "tables" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "cell-mosaics" },
+    { name = "pywarper" },
+    { name = "skeliner" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "cell-mosaics", specifier = ">=0.1.0" },
     { name = "fastparquet", specifier = ">=2025.12.0" },
     { name = "h5py", specifier = ">=3.14.0" },
     { name = "jupyter", specifier = ">=1.1.1" },
@@ -519,11 +522,16 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "pandas-stubs", specifier = "==2.3.2.250827" },
     { name = "plotly", specifier = ">=6.5.0" },
-    { name = "pywarper", specifier = ">=0.2.3" },
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "shapely", specifier = ">=2.1.2" },
-    { name = "skeliner", specifier = ">=0.1.12" },
     { name = "tables", specifier = ">=3.10.2" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "cell-mosaics", specifier = ">=0.1.0" },
+    { name = "pywarper", specifier = ">=0.2.3" },
+    { name = "skeliner", specifier = ">=0.1.12" },
 ]
 
 [[package]]
