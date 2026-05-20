@@ -8,6 +8,8 @@ data/stimuli
 *.pickle
 *.pkl
 *.png
+*.pdf
+*.svg
 
 # C extensions
 *.so
