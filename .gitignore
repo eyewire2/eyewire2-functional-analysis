@@ -9,7 +9,7 @@ data/stimuli
 *.pkl
 *.png
 *.pdf
-*.svg
+#*.svg
 
 # C extensions
 *.so
