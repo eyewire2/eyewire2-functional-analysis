@@ -7,7 +7,7 @@ MB_DIRS_SYMBOLS_V_UP = ('↓', '↑', '↙', '↗', '←', '→', '↖', '↘')
 MB_DIRS_SYMBOLS_D_UP = ('↑', '↓', '↗', '↙', '→', '←', '↘', '↖')
 
 
-def plot_chirp(ax, row, stimulus_ms=None, plot_hline=True, plot_vlines=False):
+def plot_chirp(ax, row, stimulus_ms=None, plot_hline=True, plot_vlines=False, lw=1):
     """Plot chirp stimulus response snippets and their normalised average onto ``ax``.
 
     Args:
@@ -22,9 +22,9 @@ def plot_chirp(ax, row, stimulus_ms=None, plot_hline=True, plot_vlines=False):
     snippets = row['chirp_snippets']
     for i, trace in enumerate(snippets.T):
         ax.plot(np.arange(0, len(trace)) * row['chirp_snippets_dt'], trace / np.max(np.abs(trace)), color='dimgray',
-                alpha=0.5, clip_on=False)
+                alpha=0.5, clip_on=False, lw=lw)
     ax.plot(np.arange(0, len(row['chirp_average_norm'])) * row['chirp_average_dt'], row['chirp_average_norm'],
-            color='black', clip_on=False, )
+            color='black', clip_on=False, lw=lw)
     if plot_hline:
         ax.axhline(0, c='dimgray', ls='--')
     if plot_vlines:
@@ -38,7 +38,7 @@ def plot_chirp(ax, row, stimulus_ms=None, plot_hline=True, plot_vlines=False):
                 c='k', clip_on=False, lw=1, solid_capstyle='butt')
 
 
-def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False, ventral_up=True):
+def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False, ventral_up=True, lw=1):
     """Plot moving-bar response snippets for all 8 directions in a single axes.
 
     Snippets are grouped by direction and plotted consecutively along the time axis.
@@ -62,8 +62,8 @@ def plot_bar(ax, row, annotate_dirs=False, annotate_symbols=False, ventral_up=Tr
         snippets = row['bar_snippets'][:, np.array([0, 8, 16]) + i]
         time = (np.arange(0, snippets.shape[0]) + (snippets.shape[0] * 1.2 * i)) * row['bar_snippets_dt']
         for trace in snippets.T:
-            ax.plot(time, trace / vmax, color='dimgray', alpha=0.5, clip_on=False, )
-        ax.plot(time, np.mean(snippets, axis=1) / vmax, color='black', clip_on=False)
+            ax.plot(time, trace / vmax, color='dimgray', alpha=0.5, clip_on=False, lw=lw)
+        ax.plot(time, np.mean(snippets, axis=1) / vmax, color='black', clip_on=False, lw=lw)
         ax.axhline(0, c='dimgray', ls='--')
         if annotate_dirs or annotate_symbols:
             x = time[0] + 0.5 * (time[-1] - time[0])
@@ -609,7 +609,7 @@ def add_rect(ax, box_xlim, box_ylim, color_crop, linewidth=1.2):
     ax.add_patch(rect)
 
 
-def plot_sac_lines(ax, xlim, text=True, con='#17CFB9', coff='#FFC09F', ls='-', lw=1):
+def plot_sac_lines(ax, xlim, text=True, con='#FFC09F', coff='#17CFB9', ls='-', lw=1):
     """Draw horizontal ON and OFF stratification lines for an IPL depth plot.
 
     Args:
