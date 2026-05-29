@@ -2,6 +2,10 @@
 
 **All data and code shared here is subject to the [Eyewire II Principles of Collaboration](https://eyewire.ai/principles).** By the use of this repository, you agree to be bound by these Principles.
 
+## License note
+
+The code in this repository is under MIT license. All data in the repository, as stated in the principles of collaboration, is shared under [CC-BY-NC-4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+
 # Eyewire II: Functional data
 
 This repository hosts the functional data from OGB-1 recordings in the Eyewire II dataset.
