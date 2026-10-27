@@ -35,8 +35,10 @@ DATA_ROOT = os.path.join(PROJECT_ROOT, "data")
 DATA_REGISTRATION = os.path.join(DATA_ROOT, "registration")
 DATA_IPL_PROFILES = os.path.join(DATA_ROOT, "ipl_profiles")
 
-MAIN_ALL_CELLS_SHEET = "Eyewire II Proofread Cells Main List - All Cells 2026-08-06.csv"
-MAP_SHEET = "Eyewire II Proofread Cells Main List - EM-2p-mapping 2026-08-06.csv"
+#MAIN_ALL_CELLS_SHEET = "Eyewire II Proofread Cells Main List - All Cells 2026-08-06.csv"
+#MAP_SHEET = "Eyewire II Proofread Cells Main List - EM-2p-mapping 2026-08-06.csv"
+MAIN_ALL_CELLS_SHEET = "Eyewire II Proofread Cells Main List - All Cells 2026-09-16.csv"
+MAP_SHEET = "Eyewire II Proofread Cells Main List - EM-2p-mapping 2026-09-16.csv"
 EM_2P_REGISTRATION_FILE = "em_2p_registration.yaml"
 
 
